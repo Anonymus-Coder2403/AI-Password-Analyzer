@@ -11,9 +11,8 @@ export const Hero = () => {
         <div className="mx-auto max-w-4xl text-center">
           {/* Main Heading */}
           <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl animate-fade-in">
-            The API Security{" "}
             <span className="bg-gradient-to-r from-primary via-primary-glow to-secondary bg-clip-text text-transparent">
-              Framework
+              AI Password Analyzer
             </span>
           </h1>
 
