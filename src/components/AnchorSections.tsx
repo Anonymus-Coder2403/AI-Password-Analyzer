@@ -56,9 +56,6 @@ export const AnchorSections = () => {
               their password security practices.
             </p>
             <div className="flex flex-col items-center gap-4">
-              <div className="text-5xl font-bold gradient-primary bg-clip-text text-transparent">
-                2M+
-              </div>
               <p className="text-muted-foreground">Passwords analyzed monthly</p>
             </div>
           </div>
