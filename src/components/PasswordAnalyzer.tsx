@@ -4,14 +4,14 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Shield, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
-import { analyzePassword, PasswordAnalysis } from "@/lib/password-analyzer";
+import { analyzePassword, humanizeCrackTimes, StrengthResult } from "@/lib/strength";
 import { checkPasswordBreach } from "@/lib/breach-check";
 import { siteConfig } from "@/config/site.config";
 
 export const PasswordAnalyzer = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [analysis, setAnalysis] = useState<PasswordAnalysis | null>(null);
+  const [analysis, setAnalysis] = useState<StrengthResult | null>(null);
   const [breachCheckEnabled, setBreachCheckEnabled] = useState(false);
   const [breachResult, setBreachResult] = useState<{
     breached: boolean;
@@ -22,8 +22,12 @@ export const PasswordAnalyzer = () => {
 
   // Analyze password in real-time
   useEffect(() => {
-    const result = analyzePassword(password);
-    setAnalysis(result);
+    if (password) {
+      const result = analyzePassword(password);
+      setAnalysis(result);
+    } else {
+      setAnalysis(null);
+    }
   }, [password]);
 
   // Handle breach check
@@ -44,20 +48,12 @@ export const PasswordAnalyzer = () => {
     }
   }, [password, breachCheckEnabled]);
 
-  const strengthColors = {
-    'very-weak': 'bg-destructive',
-    'weak': 'bg-orange-500',
-    'fair': 'bg-yellow-500',
-    'good': 'bg-blue-500',
-    'strong': 'bg-green-500',
-  };
-
-  const strengthLabels = {
-    'very-weak': 'Very Weak',
-    'weak': 'Weak',
-    'fair': 'Fair',
-    'good': 'Good',
-    'strong': 'Strong',
+  const getStrengthColor = (score: number) => {
+    if (score === 0) return 'bg-destructive';
+    if (score === 1) return 'bg-orange-500';
+    if (score === 2) return 'bg-yellow-500';
+    if (score === 3) return 'bg-blue-500';
+    return 'bg-green-500';
   };
 
   return (
@@ -113,20 +109,14 @@ export const PasswordAnalyzer = () => {
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-sm font-medium">Strength</span>
                     <span className={`text-sm font-semibold ${analysis.score >= 4 ? 'text-green-500' : analysis.score >= 3 ? 'text-yellow-500' : 'text-destructive'}`}>
-                      {strengthLabels[analysis.strength]}
+                      {analysis.label}
                     </span>
                   </div>
-                  <div className="flex gap-1">
-                    {[1, 2, 3, 4, 5].map((level) => (
-                      <div
-                        key={level}
-                        className={`h-2 flex-1 rounded-full transition-colors duration-300 ${
-                          level <= analysis.score
-                            ? strengthColors[analysis.strength]
-                            : 'bg-muted'
-                        }`}
-                      />
-                    ))}
+                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${getStrengthColor(analysis.score)}`}
+                      style={{ width: `${analysis.bar}%` }}
+                    />
                   </div>
                 </div>
 
@@ -134,14 +124,14 @@ export const PasswordAnalyzer = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="rounded-lg bg-muted/50 p-4">
                     <div className="mb-1 text-xs text-muted-foreground">Entropy</div>
-                    <div className="text-2xl font-bold">{analysis.entropy} bits</div>
+                    <div className="text-2xl font-bold">{analysis.entropyBits} bits</div>
                   </div>
                   <div className="rounded-lg bg-muted/50 p-4">
                     <div className="mb-1 text-xs text-muted-foreground flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       Time to Crack (Offline)
                     </div>
-                    <div className="text-2xl font-bold">{analysis.crackTimes.offlineSlowHash}</div>
+                    <div className="text-2xl font-bold">{humanizeCrackTimes(analysis.crackTimes).slowHash}</div>
                   </div>
                 </div>
 
@@ -152,50 +142,44 @@ export const PasswordAnalyzer = () => {
                   </summary>
                   <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Online (throttled, 10/sec):</span>
-                      <span className="font-medium">{analysis.crackTimes.onlineThrottled}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-muted-foreground">Online (unthrottled, 100/sec):</span>
-                      <span className="font-medium">{analysis.crackTimes.onlineUnthrottled}</span>
+                      <span className="text-muted-foreground">Online (100/sec):</span>
+                      <span className="font-medium">{humanizeCrackTimes(analysis.crackTimes).online}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Offline (slow hash, bcrypt):</span>
-                      <span className="font-medium">{analysis.crackTimes.offlineSlowHash}</span>
+                      <span className="font-medium">{humanizeCrackTimes(analysis.crackTimes).slowHash}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Offline (fast hash, MD5):</span>
-                      <span className="font-medium">{analysis.crackTimes.offlineFastHash}</span>
+                      <span className="text-muted-foreground">Offline (fast hash, GPU):</span>
+                      <span className="font-medium">{humanizeCrackTimes(analysis.crackTimes).fastHash}</span>
                     </div>
                   </div>
                 </details>
 
                 {/* Feedback */}
-                {analysis.feedback.warning && (
-                  <div className="flex gap-3 rounded-lg bg-destructive/10 border border-destructive/20 p-4">
-                    <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                {analysis.suggestions.length > 0 && (
+                  <div className={`flex gap-3 rounded-lg p-4 ${
+                    analysis.score >= 3
+                      ? 'bg-green-500/10 border border-green-500/20'
+                      : 'bg-destructive/10 border border-destructive/20'
+                  }`}>
+                    {analysis.score >= 3 ? (
+                      <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                    ) : (
+                      <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                    )}
                     <div className="space-y-2">
-                      <p className="font-medium text-destructive">{analysis.feedback.warning}</p>
+                      <p className={`font-medium ${analysis.score >= 3 ? 'text-green-500' : 'text-destructive'}`}>
+                        {analysis.score >= 3 ? 'Good password! Here are some tips:' : 'How to improve:'}
+                      </p>
                       <ul className="space-y-1 text-sm text-muted-foreground">
-                        {analysis.feedback.suggestions.map((suggestion, idx) => (
+                        {analysis.suggestions.map((suggestion, idx) => (
                           <li key={idx} className="flex gap-2">
                             <span>•</span>
                             <span>{suggestion}</span>
                           </li>
                         ))}
                       </ul>
-                    </div>
-                  </div>
-                )}
-
-                {!analysis.feedback.warning && analysis.score >= 4 && (
-                  <div className="flex gap-3 rounded-lg bg-green-500/10 border border-green-500/20 p-4">
-                    <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="font-medium text-green-500">Strong password!</p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {analysis.feedback.suggestions[0]}
-                      </p>
                     </div>
                   </div>
                 )}
