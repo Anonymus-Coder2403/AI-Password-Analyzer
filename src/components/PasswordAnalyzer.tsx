@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Eye, EyeOff, Shield, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 import { analyzePassword, humanizeCrackTimes, StrengthResult } from "@/lib/strength";
 import { checkPasswordBreach } from "@/lib/breach-check";
 import { siteConfig } from "@/config/site.config";
+import { StrengthBar } from "@/components/ui/strength-bar";
 
 export const PasswordAnalyzer = () => {
   const [password, setPassword] = useState("");
@@ -59,44 +59,48 @@ export const PasswordAnalyzer = () => {
   return (
     <section id="analyzer" className="py-20 md:py-32">
       <div className="container px-4 md:px-6">
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-[720px]">
           {/* Section Header */}
           <div className="mb-12 text-center">
             <h2 className="mb-4 text-3xl font-bold md:text-4xl">
               Password Strength Analyzer
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-lg">
               Test your password security with real-time analysis
             </p>
           </div>
 
           {/* Main Analyzer Card */}
-          <div className="rounded-2xl bg-card border border-border/50 p-6 md:p-8 shadow-lg hover:shadow-glow-sm transition-shadow duration-300">
-            {/* Password Input */}
+          <div className="rounded-2xl bg-card border border-border/50 p-8 md:p-12 shadow-glow transition-all duration-300">
+            {/* Password Input with Gradient Ring */}
             <div className="mb-6">
-              <Label htmlFor="password" className="mb-2 block text-sm font-medium">
+              <Label htmlFor="password" className="mb-3 block text-sm font-medium">
                 Enter Password
               </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Type your password here..."
-                  className="pr-10 h-12 text-base"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                </button>
+              {/* Gradient ring wrapper */}
+              <div className="p-[1.5px] bg-gradient-to-r from-[hsl(258_90%_66%)] to-[hsl(243_75%_59%)] rounded-xl">
+                <div className="relative bg-[hsl(217_33%_6%)] rounded-[10px]">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Type your password here..."
+                    className="pr-12 h-14 text-base bg-transparent border-0 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-0"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg p-1"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-pressed={showPassword}
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground flex items-center gap-1">
-                <Shield className="h-3 w-3" />
+              <p className="mt-3 text-xs text-muted-foreground flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5" />
                 Analyzed locally. Your password never leaves your device.
               </p>
             </div>
@@ -104,20 +108,21 @@ export const PasswordAnalyzer = () => {
             {/* Strength Meter */}
             {analysis && password && (
               <div className="space-y-6 animate-fade-in">
-                {/* Strength Bars */}
+                {/* 5-Segment Strength Bar */}
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-sm font-medium">Strength</span>
-                    <span className={`text-sm font-semibold ${analysis.score >= 4 ? 'text-green-500' : analysis.score >= 3 ? 'text-yellow-500' : 'text-destructive'}`}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-sm font-medium">Password Strength</span>
+                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold ${
+                      analysis.score === 0 ? 'bg-red-500/10 text-red-500' :
+                      analysis.score === 1 ? 'bg-orange-500/10 text-orange-500' :
+                      analysis.score === 2 ? 'bg-yellow-500/10 text-yellow-500' :
+                      analysis.score === 3 ? 'bg-lime-500/10 text-lime-500' :
+                      'bg-green-500/10 text-green-500'
+                    }`}>
                       {analysis.label}
                     </span>
                   </div>
-                  <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
-                    <div
-                      className={`h-full transition-all duration-300 ${getStrengthColor(analysis.score)}`}
-                      style={{ width: `${analysis.bar}%` }}
-                    />
-                  </div>
+                  <StrengthBar score={analysis.score} />
                 </div>
 
                 {/* Entropy & Crack Time */}

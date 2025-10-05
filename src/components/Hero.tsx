@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { Shield, BookOpen, Check } from "lucide-react";
 
 export const Hero = () => {
@@ -24,27 +24,25 @@ export const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <Button
+            <GradientButton
               size="lg"
               asChild
-              className="gradient-primary hover:shadow-glow transition-all duration-200 hover:-translate-y-0.5"
             >
-              <a href="#analyzer" className="flex items-center gap-2">
+              <a href="#analyzer">
                 <Shield className="h-5 w-5" />
                 Get Started
               </a>
-            </Button>
-            <Button
+            </GradientButton>
+            <GradientButton
               size="lg"
               variant="outline"
               asChild
-              className="border-border/50 hover:border-border transition-all duration-200 hover:-translate-y-0.5"
             >
-              <a href="/docs" className="flex items-center gap-2">
+              <a href="/docs">
                 <BookOpen className="h-5 w-5" />
                 Read the docs
               </a>
-            </Button>
+            </GradientButton>
           </div>
 
           {/* Trust Indicators */}

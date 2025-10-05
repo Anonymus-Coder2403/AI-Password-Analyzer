@@ -3,6 +3,11 @@ import { Hero } from "@/components/Hero";
 import { PasswordAnalyzer } from "@/components/PasswordAnalyzer";
 import { Features } from "@/components/Features";
 import { HowItWorks } from "@/components/HowItWorks";
+import { Testimonials } from "@/components/Testimonials";
+import { Pricing } from "@/components/Pricing";
+import { FAQ } from "@/components/FAQ";
+import { BlogPreview } from "@/components/BlogPreview";
+import { SecurityBadges } from "@/components/SecurityBadges";
 import { CTASection } from "@/components/CTASection";
 import { AnchorSections } from "@/components/AnchorSections";
 import { Footer } from "@/components/Footer";
@@ -38,6 +43,11 @@ const Index = () => {
         <PasswordAnalyzer />
         <Features />
         <HowItWorks />
+        <Testimonials />
+        <Pricing />
+        <FAQ />
+        <BlogPreview />
+        <SecurityBadges />
         <AnchorSections />
         <CTASection />
       </main>

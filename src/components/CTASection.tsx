@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { Shield, BookOpen } from "lucide-react";
 
 export const CTASection = () => {
@@ -21,27 +21,25 @@ export const CTASection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
+              <GradientButton
                 size="lg"
                 asChild
-                className="gradient-primary hover:shadow-glow transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto"
               >
-                <a href="#analyzer" className="flex items-center gap-2">
+                <a href="#analyzer">
                   <Shield className="h-5 w-5" />
                   Start Free Analysis
                 </a>
-              </Button>
-              <Button
+              </GradientButton>
+              <GradientButton
                 size="lg"
                 variant="outline"
                 asChild
-                className="border-border/50 hover:border-border transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto"
               >
-                <a href="/security-guide" className="flex items-center gap-2">
+                <a href="/security-guide">
                   <BookOpen className="h-5 w-5" />
                   Learn More About Security
                 </a>
-              </Button>
+              </GradientButton>
             </div>
           </div>
         </div>
