@@ -51,4 +51,19 @@ The tool runs **entirely client-side**, guaranteeing **100 % privacy** — no pa
 ---
 
 ## 📂 Project Structure
+AI-Password-Analyzer/
+├── public/
+│ ├── favicon.ico
+│ └── screenshots/
+├── src/
+│ ├── components/
+│ │ └── PasswordAnalyzer.tsx
+│ ├── lib/
+│ │ ├── strength.ts
+│ │ └── breach-check.ts
+│ ├── config/
+│ │ └── site.config.ts
+│ └── pages/
+│ └── index.tsx
+└── package.json
 
