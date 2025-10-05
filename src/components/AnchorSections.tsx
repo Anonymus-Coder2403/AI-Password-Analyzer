@@ -46,22 +46,6 @@ export const AnchorSections = () => {
         </div>
       </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-panel/20">
-        <div className="container px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="mb-4 text-3xl font-bold md:text-4xl">Pricing</h2>
-            <p className="text-lg text-muted-foreground mb-6">
-              The web-based password analyzer is completely free to use. For enterprise features,
-              API access, and custom integrations, contact our sales team for pricing information.
-            </p>
-            <div className="inline-flex items-center justify-center rounded-lg bg-primary/10 border border-primary/20 px-6 py-3 text-primary font-semibold">
-              Free Forever • No Credit Card Required
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Customers Section */}
       <section id="customers" className="py-20">
         <div className="container px-4 md:px-6">
