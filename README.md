@@ -1,7 +1,6 @@
 ## Project info
 
-**URL**: https://lovable.dev/projects/37f6420d-9ac3-4abc-b838-5b69c138cb1f
-
+**URL**: https://ai-password-strength-analyzer.lovable.app
 
 ## What technologies are used for this project?
 
