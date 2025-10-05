@@ -18,7 +18,7 @@ export const Hero = () => {
 
           {/* Subheading */}
           <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground md:text-xl animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Our landing page template works on all devices, so you only have to set it up once,
+            Our ai powered analyzer works on all devices, so you only have to set it up once,
             and get privacy-first password insights that never leave your browser.
           </p>
 
